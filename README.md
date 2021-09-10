@@ -87,19 +87,7 @@ article{liu2020antibody,
   year={2020},
   publisher={Oxford University Press}
 ```
-
-CoV-AbDab http://opig.stats.ox.ac.uk/webapps/covabdab/
-```
-@article{raybould2021cov,
-  title={CoV-AbDab: the coronavirus antibody database},
-  author={Raybould, Matthew IJ and Kovaltsuk, Aleksandr and Marks, Claire and Deane, Charlotte M},
-  journal={Bioinformatics},
-  volume={37},
-  number={5},
-  pages={734--735},
-  year={2021},
-  publisher={Oxford University Press}
-```
+![antibody_edited](https://user-images.githubusercontent.com/7905155/132877614-f4dc6b6e-cdd4-4b8c-b872-e1434cb1d836.png)
 
 ## Disclaimer
 
