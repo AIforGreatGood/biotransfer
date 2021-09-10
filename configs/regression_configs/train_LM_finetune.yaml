@@ -1,0 +1,107 @@
+defaults:
+    - model_cfg: Model_template
+    - logger_cfgs: Tensorboard
+#    - hydra/sweeper: ax
+    - override hydra/launcher: submitit_slurm
+#    - override hydra/sweeper: optuna
+
+experiment_name: "train_template"
+nodes: 1
+strict_reload: False
+reload_checkpoint_path: "/home/gridsan/LI25662/ai4bio_shared/models/in_house/heavychain_initialized_by_pfam_batchsize_2048_layers_24_lr_1e-5_hidsize_1024_intermediatesize_4096_attentionheads_16_epoch_5.ckpt"
+
+hydra:
+    run:
+        dir: ./results/train/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+    sweep:
+        dir: ./results/train/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    
+    
+    #sweeper:
+        #optuna_config:
+          #direction: minimize
+          #study_name: ${experiment_name}
+          #storage: postgresql://pguser:y26j59ayacu09bbwlrgrjfbcg@txg-optape.cloud.llgrid.ll.mit.edu/postgres
+          #n_trials: 30
+          #n_jobs: 1
+          #sampler: random
+        #search_space:
+          #model_cfg.lr:
+            #type: float
+            #low: 1e-6
+            #high: 1e-4
+            #log: true
+          #model_cfg.downstream_dropout:
+            #type: categorical
+            #choices:
+              #- 0.0
+              #- 0.1
+              #- 0.2
+              #- 0.3
+              #- 0.4
+              #- 0.5
+          #model_cfg.downstream_hid_dim:
+            #type: categorical
+            #choices:
+              #- 128
+              #- 256
+              #- 512
+              #- 1024
+
+    launcher:
+        partition: gaia
+        tasks_per_node: 2
+        nodes: ${nodes}
+        constraint: xeon-g6
+        timeout_min: 10000
+        additional_parameters:
+            {'gres':'gpu:volta:2'}
+############
+
+trainer_cfg:
+    max_epochs: 20
+    gpus: 2
+    num_nodes: ${nodes}
+    distributed_backend: ddp
+    #train_percent_check: 0.1
+
+train_set_cfg:
+    _target_: src.datasets.CovidDataset
+    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/AAbio_data/covid"
+    split: train
+    chain: 14H
+    average_replicates: True
+    add_static_ends: True
+    correction: replicate
+    filter_nan: drop
+    #in_memory: False
+    
+train_dataloader_cfg:
+    batch_size: 32
+    shuffle: True
+
+callback_cfgs:
+    early_stopping:
+        _target_: pytorch_lightning.callbacks.EarlyStopping
+        monitor: val_loss
+        verbose: True
+        
+checkpoint_callback_cfg:
+    filepath: "checkpoint/"
+    
+val_set_cfg:
+    _target_: src.datasets.CovidDataset
+    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/AAbio_data/covid"
+    split: valid
+    chain: 14H
+    average_replicates: True
+    add_static_ends: True
+    correction: replicate
+    filter_nan: drop
+    #in_memory: False
+    #maxlen: 512
+    
+val_dataloader_cfg:
+    batch_size: 32
+

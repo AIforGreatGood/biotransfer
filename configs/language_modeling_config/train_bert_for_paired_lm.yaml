@@ -1,0 +1,66 @@
+defaults:
+    - model_cfg: BertPairedLM
+    - logger_cfgs: Tensorboard
+    - hydra/launcher: submitit_slurm
+
+experiment_name: "train_pairedLM_template"
+nodes: 1
+
+hydra:
+    run:
+        dir: ./results_bert_paired/train/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+    sweep:
+        dir: ./results/train/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+    launcher:
+        partition: gaia
+        tasks_per_node: 2
+        nodes: ${nodes}
+        constraint: xeon-g6
+        timeout_min: 10000
+        additional_parameters:
+            {'gres':'gpu:volta:2'}
+############
+
+trainer_cfg:
+    max_epochs: 10
+    gpus: 2
+    num_nodes: ${nodes}
+    distributed_backend: ddp
+    accumulate_grad_batches: 128
+    #precision: 16
+    #amp_level: 'O2'
+  
+
+train_set_cfg:
+    _target_: src.datasets.PairedAntibodyBertLanguageModelingDataset
+    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/paired_for_LM_training"
+    split: train
+    #tokenizer: "iupac" Hardcoded currently
+    in_memory: False
+    maxlen: 512
+    
+train_dataloader_cfg:
+    batch_size: 8
+    shuffle: True
+
+callback_cfgs:
+    early_stopping:
+        _target_: pytorch_lightning.callbacks.EarlyStopping
+        monitor: val_loss
+        verbose: True
+        
+checkpoint_callback_cfg:
+    filepath: "checkpoint/"
+    
+val_set_cfg:
+    _target_: src.datasets.PairedAntibodyBertLanguageModelingDataset
+    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/paired_for_LM_training/"
+    split: valid
+    tokenizer: "iupac"
+    in_memory: False
+    maxlen: 512
+    
+val_dataloader_cfg:
+    batch_size: 8

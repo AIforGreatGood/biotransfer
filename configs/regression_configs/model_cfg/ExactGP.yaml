@@ -1,0 +1,3 @@
+_target_: src.models.ExactGP.GPRegressionModel
+lr: 0.025
+num_epochs: 900

@@ -1,0 +1,68 @@
+defaults:
+    - model_cfg: BertLM
+    - logger_cfgs: Tensorboard
+    - override hydra/launcher: submitit_slurm
+
+experiment_name: "train_language_modeling_on_random_peptides"
+nodes: 32
+#Use reload_checkpoint_path to initialize weights from an existing model
+#reload_checkpoint_path: "path to model here"
+
+hydra:
+    run:
+        dir: ./results/train/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+    launcher:
+        partition: gaia
+        tasks_per_node: 2
+        nodes: ${nodes}
+        constraint: xeon-g6
+        timeout_min: 10000
+        additional_parameters:
+            {'gres':'gpu:volta:2'}
+
+############
+
+trainer_cfg:
+    max_epochs: 10
+    gpus: 2
+    num_nodes: ${nodes}
+    distributed_backend: ddp
+    #accumulate_grad_batches: 1
+    #Precision and amp_level are used to speed up the training with a small cost to model performance
+    precision: 16
+    amp_level: 'O2'
+   
+
+train_set_cfg:
+    _target_: src.datasets.RandomBertLanguageModelingDataset
+    data_path: "/home/gridsan/ES26698/biotransfer/data/random_peptide/"
+    split: train
+    in_memory: False
+    maxlen: 512
+    
+train_dataloader_cfg:
+    batch_size: 32
+    num_workers: 8
+    shuffle: True
+
+callback_cfgs:
+    early_stopping:
+        _target_: pytorch_lightning.callbacks.EarlyStopping
+        monitor: val_loss
+        verbose: True
+        
+checkpoint_callback_cfg:
+    filepath: "checkpoint/"
+    
+val_set_cfg:
+    _target_: src.datasets.RandomBertLanguageModelingDataset
+    data_path: "/home/gridsan/ES26698/biotransfer/data/random_peptide/"
+    split: valid
+    #tokenizer: "iupac"
+    in_memory: False
+    maxlen: 512
+    
+val_dataloader_cfg:
+    batch_size: 32
+    num_workers: 8

@@ -1,0 +1,129 @@
+# Copyright (c) 2021 Massachusetts Institute of Technology
+# Subject to FAR 52.227-11 – Patent Rights – Ownership by the Contractor (May 2014).
+# SPDX-License-Identifier: MIT
+
+from typing import Union, List, Tuple, Sequence, Dict, Any, Optional, Collection
+import time
+
+from .tokenizers import AffinityTokenizer
+from tape import ProteinBertForValuePrediction
+import torch
+from torch.utils.data import Dataset
+from torch.nn.functional import one_hot
+from pathlib import Path
+from tape.datasets import dataset_factory
+import numpy as np
+from tape.datasets import pad_sequences
+import hydra
+import random
+from sklearn.utils.class_weight import compute_class_weight
+
+class CovAbDataset(Dataset):
+    """Dataset for Gifford paper data"""
+
+    def __init__(self,
+                 data_path: Union[str, Path],
+                 split: str,
+                 tokenizer: Union[str, AffinityTokenizer] = 'iupac',
+                 in_memory: bool = False,
+                 collate_type: str = "batch_padded",
+                 token_encode_type: str = "embed",
+                 feat_model = None,
+                 num_samples = None):
+        """Inits dataset"""
+
+        if split not in ('train', 'val', 'test'):
+            raise ValueError(f"Unrecognized split: {split}. "
+                             f"Must be one of ['train', 'val', 'test']")
+        if isinstance(tokenizer, str):
+            tokenizer = AffinityTokenizer(vocab=tokenizer)
+        self.tokenizer = tokenizer
+
+        data_path = Path(data_path)
+
+        data_file = f'cov_abdata_{split}.json'
+
+        data = dataset_factory(data_path / data_file, in_memory)
+        if num_samples is not None:
+            random.seed(0)
+            sample_inds = random.sample(list(range(len(data))), num_samples)
+            self.data = [data[ind] for ind in sample_inds]
+        else:
+            self.data = data
+
+        labels = np.array([d['bind'] for d in self.data])
+        #weights = compute_class_weight('balanced', np.unique(labels), labels)
+        weights = [10,1]
+        print('class weights:', weights)
+        self.label_weight = torch.FloatTensor(weights)
+
+
+        # If batch_padded, pads each sample to max length in current batch
+        # If full_padded, pads each sample to the max length in dataset
+        assert collate_type in ["batch_padded", "full_padded"]
+        self.collate_type = collate_type
+
+        assert token_encode_type in ["embed", "one_hot", "pre_embed"]
+        if token_encode_type == "pre_embed":
+            assert feat_model is not None
+            self.feat_model = feat_model
+        self.token_encode_type = token_encode_type
+
+        # This is the length of the longest sequence in the whole dataset,
+        # including val and test.
+        self.max_length = 124
+
+    def __len__(self) -> int:
+        """Returns dataset length"""
+        return len(self.data)
+
+    def __getitem__(self, index: int):
+        """Returns sample from dataset at specific index
+
+        Args:
+            index (int): Index of dataset
+        """
+        item = self.data[index]
+        token_ids = self.tokenizer.encode(item['sequences'])
+        input_mask = np.ones_like(token_ids)
+        return token_ids, input_mask, item['bind']
+
+    def collate_fn(self, batch: List[Tuple[Any, ...]]) -> Dict[str, torch.Tensor]:
+        """Turns list of samples into batch that can be fed to a model
+
+        Args:
+            batch (List[Any]): A list of samples to be turned into a batch.
+
+        Returns:
+            A batch corresponding to the given list of samples
+        """
+        input_ids, input_masks, true_labels = tuple(zip(*batch))
+
+        if self.collate_type == "batch_padded":
+            input_ids = torch.from_numpy(pad_sequences(input_ids, 0))
+            input_masks = torch.from_numpy(pad_sequences(input_masks, 0))
+        else:
+            input_ids = [np.pad(input_id, (0, self.max_length - len(input_id)), "constant", constant_values=(0,0)) for input_id in input_ids]
+            input_ids = np.stack(input_ids)
+            input_ids = torch.from_numpy(input_ids)
+
+
+            input_masks = [np.pad(input_mask, (0, self.max_length - len(input_mask)), "constant", constant_values=(0,0)) for input_mask in input_masks]
+            input_masks = np.stack(input_masks)
+            input_masks = torch.from_numpy(input_masks)
+
+        #true_labels = torch.LongTensor(true_labels)  # type: ignore
+        true_labels = torch.FloatTensor(true_labels)
+
+        if self.token_encode_type == "one_hot":
+            input_ids = one_hot(input_ids, len(set(self.tokenizer.vocab.values())))
+            input_ids = input_ids.permute(0, 2, 1)
+            input_ids = input_ids.type(torch.float32)
+        elif self.token_encode_type == "pre_embed":
+            input_ids = self.feat_model(input_ids, input_masks)
+            input_ids = input_ids.permute(0, 2, 1)
+            input_ids = input_ids.type(torch.float32)
+        return {'input_ids': input_ids,
+                'input_masks': input_masks,
+                'targets': true_labels,
+                'label_weights':self.label_weight}

@@ -1,0 +1,55 @@
+defaults:
+    - model_cfg: GiffordCNN
+    - logger_cfgs: Tensorboard
+    - override hydra/launcher: submitit_slurm
+    #- override hydra/sweeper: optuna
+
+experiment_name: "eval_GiffordCNN"
+nodes: 1
+strict_reload: False
+reload_checkpoint_path: "/home/gridsan/ES26698/BioTransfer_master/biotransfer/results/train/GiffordCNN_train/2021-08-06/12-09-22/0/checkpoint.ckpt"
+
+hydra:
+    run:
+        dir: ./results/eval/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+    sweep:
+        dir: ./results/eval/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+    launcher:
+        partition: gaia
+        tasks_per_node: 2
+        nodes: ${nodes}
+        constraint: xeon-g6
+        timeout_min: 10000
+        additional_parameters:
+            {'gres':'gpu:volta:2'}
+############
+
+trainer_cfg:
+    max_epochs: 1
+    gpus: 2
+    num_nodes: ${nodes}
+    distributed_backend: ddp
+
+  
+eval_set_cfg:
+    _target_: src.datasets.GiffordDataset
+    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/gifford/rep1_rep2_splits/"
+    split: test
+    in_memory: False
+    collate_type: full_padded
+    token_encode_type: one_hot
+    
+eval_dataloader_cfg:
+    batch_size: 16
+
+#eval_function_cfg:
+    #_target_: src.sars_cov2_eval.sars_cov2_eval
+    #chain: 14H
+
+#save_to_onnx_cfg: 
+    #input_names:
+        #- "input_ids"
+        #- "input_mask"
+    #onnx_path: "" #location to save the onnx model

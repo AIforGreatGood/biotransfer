@@ -1,0 +1,59 @@
+defaults:
+    - model_cfg: Model_template
+    - logger_cfgs: Tensorboard
+    - override hydra/launcher: submitit_slurm
+    - override hydra/sweeper: optuna
+
+experiment_name: "eval_template"
+nodes: 1
+strict_reload: False
+reload_checkpoint_path: "/home/gridsan/groups/ai4bio_shared/models/in_house/hyperparam_sweep/14H/14H/pfam_for_covid_14H_average_replicates_True_loss_function_MSE_filter_nan_drop_new_experiment_V1_91035499.ckpt"
+
+hydra:
+    run:
+        dir: ./results/eval/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+    sweep:
+        dir: ./results/eval/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+    launcher:
+        partition: gaia
+        tasks_per_node: 2
+        nodes: ${nodes}
+        constraint: xeon-g6
+        timeout_min: 10000
+        additional_parameters:
+            {'gres':'gpu:volta:2'}
+############
+
+trainer_cfg:
+    max_epochs: 1
+    gpus: 2
+    num_nodes: ${nodes}
+    distributed_backend: ddp
+    #train_percent_check: 0.1
+
+  
+eval_set_cfg:
+    _target_: src.datasets.CovidDataset
+    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/AAbio_data/covid"
+    split: test
+    chain: 14H
+    average_replicates: True
+    add_static_ends: True
+    remove_static: False
+    correction: replicate
+    filter_nan: drop
+    
+eval_dataloader_cfg:
+    batch_size: 16
+
+#eval_function_cfg:
+    #_target_: src.sars_cov2_eval.sars_cov2_eval
+    #chain: 14H
+
+#save_to_onnx_cfg: 
+    #input_names:
+        #- "input_ids"
+        #- "input_mask"
+    #onnx_path: "" #location to save the onnx model

@@ -1,0 +1,8 @@
+*
+
+!.gitignore
+!conf.py
+!index.rst
+!_static/
+!_templates/
+
