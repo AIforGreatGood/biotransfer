@@ -3,7 +3,7 @@
 ## Overview
 Methods for learning biological sequence representations from large, general purpose protein datasets have demonstrated impressive ability to capture structural and functional properties of proteins. However, existing works have not yet investigated the value, limitations and opportunities of these methods in application to antibody-based drug discovery. This work provides necessary tools, models and data for comparing three classes of models: conventional statistical sequence models, supervised learning on each dataset independently, and fine-tuning an antibody specific pre-trained embedding model. 
 
-<img src="https://github.com/AIforGreatGood/biotransfer/blob/test/images/antibody_edited.png" width="400" height="200">
+<img src="https://github.com/AIforGreatGood/biotransfer/blob/test/images/antibody_edited.png" width="600" height="400">
 
 ## Setup
 (1) Install the virtual environment by running "conda env create -f environment.yaml".  
