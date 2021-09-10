@@ -1,7 +1,7 @@
 defaults:
     - model_cfg: BertLM
     - logger_cfgs: Tensorboard
-    - override hydra/launcher: submitit_slurm
+    #- hydra/launcher: submitit_slurm
 
 experiment_name: "train_language_modeling_on_antibody"
 nodes: 1
@@ -10,17 +10,6 @@ nodes: 1
 hydra:
     run:
         dir: ./results/train/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
-
-    launcher:
-        partition: gaia
-        tasks_per_node: 2
-        nodes: ${nodes}
-        constraint: xeon-g6
-        timeout_min: 10000
-        additional_parameters:
-            {'gres':'gpu:volta:2'}
-
-############
 
 trainer_cfg:
     max_epochs: 10
