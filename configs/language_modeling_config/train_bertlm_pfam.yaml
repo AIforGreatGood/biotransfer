@@ -4,8 +4,7 @@ defaults:
     - override hydra/launcher: submitit_slurm
 
 experiment_name: "train_language_modeling_on_pfam"
-nodes: 32
-#Use reload_checkpoint_path to initialize weights from an existing model
+nodes: 1
 #reload_checkpoint_path: "path to model here"
 
 hydra:
@@ -30,14 +29,13 @@ trainer_cfg:
     distributed_backend: ddp
     accumulate_grad_batches: 4
     #Precision and amp_level are used to speed up the training with a small cost to model performance
-    precision: 16
-    amp_level: 'O2'
+    #precision: 16
+    #amp_level: 'O2'
    
 
 train_set_cfg:
-    _target_: src.datasets.TruncMaskedLanguageModelingDataset
-    data_path: "/home/gridsan/ES26698/lightning_distributed/data/pfam"
-    split: train
+    _target_: src.datasets.PfamLanguageModelingDataset
+    data_path: /home/gridsan/groups/ai4bio_shared/datasets/pfam/pfam_train.lmdb
     in_memory: False
     maxlen: 512
     
@@ -56,9 +54,8 @@ checkpoint_callback_cfg:
     filepath: "checkpoint/"
     
 val_set_cfg:
-    _target_: src.datasets.TruncMaskedLanguageModelingDataset
-    data_path: "/home/gridsan/ES26698/lightning_distributed/data/pfam"
-    split: valid
+    _target_: src.datasets.PfamLanguageModelingDataset
+    data_path: /home/gridsan/groups/ai4bio_shared/datasets/pfam/pfam_valid.lmdb
     tokenizer: "iupac"
     in_memory: False
     maxlen: 512
