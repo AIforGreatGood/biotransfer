@@ -77,9 +77,7 @@ class CovidDataset(Dataset):
                  filter_nan: str = "drop",
                  correction: str = "assay",
                  collate_type: str = "batch_padded",
-                 token_encode_type: str = "embed",
-                 feat_model = None,
-                 num_samples: int = None):
+                 token_encode_type: str = "embed",):
         """Inits dataset
 
         Args:
@@ -199,21 +197,13 @@ class CovidDataset(Dataset):
         assert collate_type in ["batch_padded", "full_padded"]
         self.collate_type = collate_type
 
-        assert token_encode_type in ["embed", "one_hot", "pre_embed"]
-        if token_encode_type == "pre_embed":
-            assert feat_model is not None
-            self.feat_model = feat_model
-            self.variable_regions = self.get_variable_regions_()
+        assert token_encode_type in ["embed", "one_hot"]
         if token_encode_type == "one_hot":
             self.variable_regions = self.get_variable_regions_()
         self.token_encode_type = token_encode_type
         self.pca_model = None
 
-        if num_samples is not None:
-            random.seed(4)
-            self.data = random.sample(data, num_samples)
-        else:
-            self.data = data
+        self.data = data
 
     def __len__(self) -> int:
         """Returns length of dataset"""
@@ -267,22 +257,6 @@ class CovidDataset(Dataset):
             input_ids = one_hot(input_ids, len(set(self.tokenizer.vocab.values())))
             input_ids = input_ids[:,self.variable_regions,:]
             input_masks = input_masks[:,self.variable_regions]
-            input_ids = input_ids.permute(0, 2, 1)
-            input_ids = input_ids.type(torch.float32)
-        elif self.token_encode_type == "pre_embed":
-            input_ids = self.feat_model(input_ids, input_masks)
-            input_ids = input_ids[:,self.variable_regions,:]
-            input_masks = input_masks[:,self.variable_regions]
-            #------ tmp code ------
-            if self.pca_model is not None:
-                print('start',input_ids.shape)
-                tmp = torch.cat(list(input_ids))
-                print(tmp.shape)
-                tmp = torch.from_numpy(self.pca_model.transform(tmp))
-                print(tmp.shape)
-                input_ids = torch.reshape(tmp,input_ids.shape)
-                print('end',input_ids.shape)
-            #------ end tmp code ------
             input_ids = input_ids.permute(0, 2, 1)
             input_ids = input_ids.type(torch.float32)
 

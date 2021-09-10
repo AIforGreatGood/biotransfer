@@ -5,7 +5,7 @@ defaults:
 experiment_name: "train_finetune_14H"
 nodes: 1
 strict_reload: False
-reload_checkpoint_path: "/home/gridsan/groups/ai4bio_shared/models/in_house/pfam_batchsize_2048_layers_24_lr_1e-5_hidsize_1024_intermediatesize_4096_attentionheads_16_epoch_13.ckpt"
+reload_checkpoint_path: /home/li25662/AIforGreatGood/biotransfer/pretrained_models/pfam.ckpt # Full path to the pretrained langauge model checkpoint
 
 hydra:
     run:
@@ -18,7 +18,7 @@ model_cfg:
     downstream_hid_dim: 512
     lr: 2.79551209035589e-05
     loss_function: mse
-    model_config_file: /home/gridsan/groups/ai4bio_shared/models/in_house/bert_configs/bert/config.json
+    model_config_file: /home/li25662/AIforGreatGood/biotransfer/pretrained_models/bert_configs/config.json # full path to the bert config file
     warmup_steps: 10000
 
 trainer_cfg:
@@ -30,7 +30,7 @@ trainer_cfg:
 
 train_set_cfg:
     _target_: src.datasets.CovidDataset
-    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/AAbio_data/covid"
+    data_path: /home/li25662/AIforGreatGood/biotransfer/data/covid/
     split: train
     chain: 14H
     average_replicates: True
@@ -54,7 +54,7 @@ checkpoint_callback_cfg:
     
 val_set_cfg:
     _target_: src.datasets.CovidDataset
-    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/AAbio_data/covid"
+    data_path: /home/li25662/AIforGreatGood/biotransfer/data/covid/
     split: valid
     chain: 14H
     average_replicates: True

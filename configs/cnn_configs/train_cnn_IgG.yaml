@@ -8,6 +8,7 @@ experiment_name: train_cnn_IgG
 hydra:
     run:
         dir: ./results/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+##########
 
 trainer_cfg:
     max_epochs: 5000
@@ -17,7 +18,7 @@ trainer_cfg:
 
 train_set_cfg:
     _target_: src.datasets.GiffordDataset
-    data_path: /home/gridsan/groups2/ai4bio_shared/datasets/gifford/rep1_rep2_splits/
+    data_path: /home/li25662/AIforGreatGood/biotransfer/data/IgG/rep1_rep2_splits
     split: train
     in_memory: False
     collate_type: full_padded

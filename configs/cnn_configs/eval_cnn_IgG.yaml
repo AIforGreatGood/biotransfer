@@ -5,11 +5,12 @@ defaults:
 
 experiment_name: "eval_cnn_IgG"
 strict_reload: True
-reload_checkpoint_path: "/home/gridsan/LI25662/ML4Bio/biotransfer/results/train_titration_gifford_cnn/train_titration_gifford_cnn_all_seed0/2021-08-30/02-16-46/5/checkpoint-v0.ckpt"
+reload_checkpoint_path: <Path to model checkpoint>
 
 hydra:
     run:
         dir: ./results/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+##########
 
 trainer_cfg:
     max_epochs: 1
@@ -20,7 +21,7 @@ trainer_cfg:
   
 eval_set_cfg:
     _target_: src.datasets.GiffordDataset
-    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/gifford/rep1_rep2_splits/"
+    data_path: /home/li25662/AIforGreatGood/biotransfer/data/IgG/rep1_rep2_splits
     split: test
     in_memory: False
     collate_type: full_padded

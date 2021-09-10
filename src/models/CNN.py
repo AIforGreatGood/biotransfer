@@ -24,8 +24,7 @@ class CNN(LightningModule):
         mp_kernel_size,
         mp_stride,
         dropout=0,
-        optimizer_cfg=None, verbose=False,
-        inducing_points=None):
+        optimizer_cfg=None, verbose=False,):
 
         super().__init__()
 

@@ -18,9 +18,6 @@ from tape.datasets import pad_sequences
 import hydra
 import random
 
-##Create a DataLoader for the affinity task and register it
-
-#@registry.register_task('affinity_new')
 class GiffordDataset(Dataset):
     """Dataset for Gifford paper data"""
 
@@ -30,9 +27,7 @@ class GiffordDataset(Dataset):
                  tokenizer: Union[str, AffinityTokenizer] = 'iupac',
                  in_memory: bool = False,
                  collate_type: str = "batch_padded",
-                 token_encode_type: str = "embed",
-                 feat_model = None,
-                 num_samples = None):
+                 token_encode_type: str = "embed",):
         """Inits dataset"""
 
         if split not in ('train', 'val', 'test'):
@@ -46,24 +41,14 @@ class GiffordDataset(Dataset):
 
         data_file = f'gifford_{split}.json'
 
-        data = dataset_factory(data_path / data_file, in_memory)
-        if num_samples is not None:
-            random.seed(4)
-            sample_inds = random.sample(list(range(len(data))), num_samples)
-            self.data = [data[ind] for ind in sample_inds]
-        else:
-            self.data = data
-
+        self.data = dataset_factory(data_path / data_file, in_memory)
 
         # If batch_padded, pads each sample to max length in current batch
         # If full_padded, pads each sample to the max length in dataset
         assert collate_type in ["batch_padded", "full_padded"]
         self.collate_type = collate_type
 
-        assert token_encode_type in ["embed", "one_hot", "pre_embed"]
-        if token_encode_type == "pre_embed":
-            assert feat_model is not None
-            self.feat_model = feat_model
+        assert token_encode_type in ["embed", "one_hot"]
         self.token_encode_type = token_encode_type
 
         # This is the length of the longest sequence in the whole dataset,
@@ -114,10 +99,6 @@ class GiffordDataset(Dataset):
 
         if self.token_encode_type == "one_hot":
             input_ids = one_hot(input_ids, len(set(self.tokenizer.vocab.values())))
-            input_ids = input_ids.permute(0, 2, 1)
-            input_ids = input_ids.type(torch.float32)
-        elif self.token_encode_type == "pre_embed":
-            input_ids = self.feat_model(input_ids, input_masks)
             input_ids = input_ids.permute(0, 2, 1)
             input_ids = input_ids.type(torch.float32)
         return {'input_ids': input_ids,

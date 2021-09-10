@@ -15,7 +15,7 @@ from pytorch_lightning.callbacks import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 from torch.utils.data import DataLoader
 
-from .utils import parse_env4lightning
+#from .utils import parse_env4lightning
 
 def eval(model_cfg, eval_set_cfg, eval_dataloader_cfg, trainer_cfg, logger_cfgs=None,
          callback_cfgs=None, seed=0, reload_checkpoint_path=None, reload_state_dict_path=None,
@@ -42,7 +42,7 @@ def eval(model_cfg, eval_set_cfg, eval_dataloader_cfg, trainer_cfg, logger_cfgs=
         eval_function_cfg: Evaluation function omegaconf configuration
     """
 
-    parse_env4lightning(verbose=True)
+    #parse_env4lightning(verbose=True)
     seed_everything(seed=seed)
         
     # Load training data handlers

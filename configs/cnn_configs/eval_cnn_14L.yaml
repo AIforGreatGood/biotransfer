@@ -9,6 +9,7 @@ reload_checkpoint_path: /home/gridsan/LI25662/ML4Bio/biotransfer/results/train_t
 hydra:
     run:
         dir: ./results/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+##########
 
 model_cfg:
     _target_: src.models.CNN
@@ -26,7 +27,6 @@ model_cfg:
     optimizer_cfg:
         _target_: torch.optim.Adam
         lr: .0001
-    inducing_points: null 
 
 trainer_cfg:
     max_epochs: 5000

@@ -7,6 +7,7 @@ experiment_name: train_cnn_14L
 hydra:
     run:
         dir: ./results/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+##########
 
 model_cfg:
     _target_: src.models.CNN
@@ -24,7 +25,6 @@ model_cfg:
     optimizer_cfg:
         _target_: torch.optim.Adam
         lr: .0001
-    inducing_points: null # To satisfy's Lin's GP code
 
 trainer_cfg:
     max_epochs: 5000
@@ -34,7 +34,7 @@ trainer_cfg:
 
 train_set_cfg:
     _target_: src.datasets.CovidDataset
-    data_path: /home/gridsan/groups/ai4bio_shared/datasets/AAbio_data/covid/
+    data_path: /home/li25662/AIforGreatGood/biotransfer/data/covid/
     split: train
     chain: 14L
     average_replicates: True
@@ -43,7 +43,6 @@ train_set_cfg:
     filter_nan: median
     collate_type: full_padded
     token_encode_type: one_hot
-    feat_model: null
     
 train_dataloader_cfg:
     batch_size: 32

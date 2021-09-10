@@ -6,7 +6,7 @@ from pytorch_lightning import LightningModule
 import torch
 from tape.models.modeling_utils import ProteinConfig
 from .modeling_bert import BertFeatureExtractor, BertTokenFeatureExtractor
-from .GiffordCNN import GiffordCNN
+from .CNN import CNN
 
 class BertFeatExtractor(LightningModule):
     """Feature extractor based on Bert"""
@@ -47,7 +47,7 @@ class BertTokenEmbedding(LightningModule):
         """Forward hook for model"""
         return self.model(input_ids, input_mask=input_mask)
 
-class ConvNetFeatExtractor(GiffordCNN):
+class ConvNetFeatExtractor(CNN):
     """Feature extractor based on Bert"""
 
     def __init__(self, enc_channels, enc_kernel_sizes, enc_strides, enc_paddings, enc_hidden_sizes, mp_kernel_size, mp_stride, dropout=0):

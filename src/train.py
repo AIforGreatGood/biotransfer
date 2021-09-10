@@ -17,7 +17,7 @@ from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 from torch.utils.data import DataLoader
 import torch
 
-from .utils import parse_env4lightning
+#from .utils import parse_env4lightning
 
 def train(train_set_cfg, train_dataloader_cfg, trainer_cfg, model_cfg=None, val_set_cfg=None, val_dataloader_cfg=None, logger_cfgs=None,
          callback_cfgs=None, checkpoint_callback_cfg=None, seed=0, reload_checkpoint_path=None, reload_state_dict_path=None,
@@ -49,7 +49,7 @@ def train(train_set_cfg, train_dataloader_cfg, trainer_cfg, model_cfg=None, val_
         Validation loss if it exists, None otherwise.
     """
 
-    parse_env4lightning(verbose=True)
+    #parse_env4lightning(verbose=True)
     seed_everything(seed=seed)
         
     # Load training data handlers

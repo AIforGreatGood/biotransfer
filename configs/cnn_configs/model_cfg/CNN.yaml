@@ -14,5 +14,3 @@ verbose: False
 optimizer_cfg:
     _target_: torch.optim.Adam
     lr: .001
-
-inducing_points: null 
