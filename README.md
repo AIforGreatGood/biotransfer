@@ -87,7 +87,6 @@ article{liu2020antibody,
   year={2020},
   publisher={Oxford University Press}
 ```
-![antibody_edited](https://user-images.githubusercontent.com/7905155/132877614-f4dc6b6e-cdd4-4b8c-b872-e1434cb1d836.png)
 
 ## Disclaimer
 
