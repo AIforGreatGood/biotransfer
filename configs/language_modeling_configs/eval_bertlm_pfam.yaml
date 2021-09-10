@@ -1,0 +1,34 @@
+defaults:
+    - logger_cfgs: Tensorboard
+    #- hydra/launcher: submitit_slurm
+
+experiment_name: "eval_bertlm_pfam"
+nodes: 1
+reload_checkpoint_path: /home/gridsan/groups/ai4bio_shared/models/in_house/pfam_batchsize_2048_layers_24_lr_1e-5_hidsize_1024_intermediatesize_4096_attentionheads_16_epoch_13.ckpt
+
+hydra:
+    run:
+        dir: ./results/eval/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+model_cfg: 
+    _target_: src.models.BertForMaskedLanguageModeling
+    model_type: transformer
+    task: masked_language_modeling
+    model_config_file: "/home/gridsan/groups/ai4bio_shared/models/in_house/bert_configs/bert/config.json"
+    lr: 1e-5
+    warmup_steps: 10000
+    
+trainer_cfg:
+    gpus: 2
+    num_nodes: ${nodes}
+    distributed_backend: ddp
+
+eval_set_cfg:
+    _target_: src.datasets.PfamLanguageModelingDataset
+    data_path: /home/gridsan/groups/ai4bio_shared/datasets/pfam/pfam_holdout.lmdb
+    tokenizer: "iupac"
+    in_memory: False
+    maxlen: 512
+    
+eval_dataloader_cfg:
+    batch_size: 32

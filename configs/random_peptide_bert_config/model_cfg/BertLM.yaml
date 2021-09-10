@@ -1,7 +1,0 @@
-# @package _group_
-_target_: src.models.BertForMaskedLanguageModeling
-model_type: transformer
-task: masked_language_modeling
-model_config_file: "/home/gridsan/ES26698/lightning_distributed/pretrained_tape_models/bert/config.json"
-lr: 1e-5
-warmup_steps: 10000

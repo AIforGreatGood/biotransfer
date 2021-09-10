@@ -1,0 +1,41 @@
+defaults:
+    #- override hydra/launcher: submitit_slurm
+
+experiment_name: "train_gp_IgG"
+hydra:
+    run:
+        dir: ./results/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+############
+
+model_cfg:
+    _target_: src.models.ExactGP.GPSparse # use GPSparse when there is a large set of training data
+    lr: 0.001
+    num_epochs: 1000
+    inducing_points: 2000
+
+feat_cfg:
+    _target_: src.models.feat_extraction.BertFeatExtractor
+    model_config_file: /home/gridsan/groups/ai4bio_shared/models/in_house/bert_configs/bert/config_hiddenstate.json
+    feat_path: "/home/gridsan/groups/ai4bio_shared/models/in_house/pfam_batchsize_2048_layers_24_lr_1e-5_hidsize_1024_intermediatesize_4096_attentionheads_16_epoch_13.ckpt"
+    strict_reload: False
+    variable_regions: False # True: use features only in the variable regions specified in the dataloader; False: use all the token embeddings
+    feat_concat: False # True: concat token features; False: avg. token features
+    pca_dim: null # int: perform pca dimensionality reduction to reduce the dimension to the specified value; null: do not perform pca
+
+train_set_cfg:
+    _target_: src.datasets.GiffordDataset
+    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/gifford/rep1_rep2_splits"
+    split: train
+  
+train_dataloader_cfg:
+    batch_size: 32
+    shuffle: True
+    
+val_set_cfg:
+    _target_: src.datasets.GiffordDataset
+    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/gifford/rep1_rep2_splits"
+    split: val
+    
+val_dataloader_cfg:
+    batch_size: 32
+

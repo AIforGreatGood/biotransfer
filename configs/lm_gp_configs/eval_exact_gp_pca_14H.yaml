@@ -1,0 +1,57 @@
+defaults:
+    #- override hydra/launcher: submitit_slurm
+
+experiment_name: "eval_gp_14H"
+strict_reload: True
+reload_state_dict_path: /home/gridsan/LI25662/ML4Bio/biotransfer/results/titration_14H_gp_pca/titration_14L_gp_all_seed1_corrected/2021-08-29/11-17-57/2/GP_model_state_dict.pth
+pca_model_path: /home/gridsan/LI25662/ML4Bio/biotransfer/results/titration_14H_gp_pca/titration_14L_gp_all_seed1_corrected/2021-08-29/11-17-57/2/pca_model.sav
+
+
+hydra:
+    run:
+        dir: ./results/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+############
+
+model_cfg:
+    _target_: src.models.ExactGP.GPRegressionModel
+    lr: 0.001
+    num_epochs: 1000
+    inducing_points: null
+
+feat_cfg:
+    _target_: src.models.feat_extraction.BertFeatExtractor
+    model_config_file: /home/gridsan/groups/ai4bio_shared/models/in_house/bert_configs/bert/config_hiddenstate.json
+    feat_path: "/home/gridsan/groups/ai4bio_shared/models/in_house/pfam_batchsize_2048_layers_24_lr_1e-5_hidsize_1024_intermediatesize_4096_attentionheads_16_epoch_13.ckpt"
+    strict_reload: False
+    variable_regions: True
+    feat_concat: True
+    pca_dim: 1024
+
+train_set_cfg:
+    _target_: src.datasets.CovidDataset
+    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/AAbio_data/covid"
+    split: train
+    chain: 14H
+    average_replicates: True
+    add_static_ends: True
+    correction: replicate
+    filter_nan: median
+    
+train_dataloader_cfg:
+    batch_size: 32
+    shuffle: True
+
+eval_set_cfg:
+    _target_: src.datasets.CovidDataset
+    data_path: "/home/gridsan/groups/ai4bio_shared/datasets/AAbio_data/covid"
+    split: test
+    chain: 14H
+    average_replicates: True
+    add_static_ends: True
+    correction: replicate
+    filter_nan: median
+    
+eval_dataloader_cfg:
+    batch_size: 32
+    shuffle: True
+    

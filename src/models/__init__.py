@@ -6,4 +6,4 @@ from .BertForMaskedLanguageModeling import BertForMaskedLanguageModeling
 from .BertPairedMaskedLM import BertPairedMaskedLM
 from .BertForValuePrediction import BertForValuePrediction
 from .BertForSequenceClassification import BertForSequenceClassification
-from .GiffordCNN import GiffordCNN
+from .CNN import CNN
