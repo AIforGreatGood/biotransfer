@@ -14,9 +14,9 @@ from scipy.stats import pearsonr, spearmanr
 from .modeling_bert import SimpleMLP
 
 # +
-class GiffordCNN(LightningModule):
+class CNN(LightningModule):
     """
-    GiffordCNN for regression.
+    CNN for regression.
     """
 
     def __init__(self, enc_channels, enc_kernel_sizes, enc_strides, enc_paddings,
@@ -65,26 +65,6 @@ class GiffordCNN(LightningModule):
         self.output_layer = SimpleMLP(self.enc_hidden_sizes[0],self.enc_hidden_sizes[1],1,dropout)
         
         self.enc_dnn_list = []
-        """
-        if self.enc_hidden_sizes:
-            for i in range(len(self.enc_hidden_sizes)-1):
-
-                # Linear
-                layer = nn.Linear(self.enc_hidden_sizes[i], self.enc_hidden_sizes[i+1])
-                self.enc_dnn_list.append(layer)
-
-                # Activation function
-                if i != len(self.enc_hidden_sizes)-2:
-                    self.enc_dnn_list.append(nn.ReLU())
-
-                # Dropout
-                if self.dropout is not None:
-                    self.enc_dnn_list.append(nn.Dropout(p=self.dropout))
-            self.enc_dnn = nn.Sequential(*self.enc_dnn_list)
-
-        # Output
-        self.output_layer = nn.Linear(self.enc_hidden_sizes[0], self.enc_hidden_sizes[-1], 1)
-        """
         self.loss_fn = torch.nn.MSELoss()
 
     def forward(self, x):

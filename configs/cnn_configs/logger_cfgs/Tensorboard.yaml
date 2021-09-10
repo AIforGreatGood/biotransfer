@@ -1,0 +1,4 @@
+# @package _global_
+logger_cfgs:
+  - _target_: pytorch_lightning.loggers.tensorboard.TensorBoardLogger
+    save_dir: logs/

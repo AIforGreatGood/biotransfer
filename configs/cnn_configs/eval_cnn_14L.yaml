@@ -1,0 +1,52 @@
+defaults:
+    - logger_cfgs: Tensorboard
+    #- override hydra/launcher: submitit_slurm
+
+experiment_name: eval_cnn_14L
+strict_reload: True
+reload_checkpoint_path: /home/gridsan/LI25662/ML4Bio/biotransfer/results/train_titration_14L_cnn/train_titration_14L_cnn_all_seed1_corrected/2021-08-29/15-22-38/8/checkpoint-v0.ckpt
+
+hydra:
+    run:
+        dir: ./results/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+model_cfg:
+    _target_: src.models.CNN
+    _recursive_: False
+    enc_channels: [30, 32, 64]
+    enc_kernel_sizes: [5, 5]
+    enc_strides: [1, 1]
+    enc_paddings: [0, 0]
+
+    enc_hidden_sizes: [320, 160]
+    mp_kernel_size: 2
+    mp_stride: 2
+    dropout: .15
+    verbose: False
+    optimizer_cfg:
+        _target_: torch.optim.Adam
+        lr: .0001
+    inducing_points: null 
+
+trainer_cfg:
+    max_epochs: 5000
+    gpus: 2
+    num_nodes: 1
+    distributed_backend: ddp
+
+eval_set_cfg:
+    _target_: src.datasets.CovidDataset
+    data_path: /home/gridsan/groups/ai4bio_shared/datasets/AAbio_data/covid/
+    split: test
+    chain: 14L
+    average_replicates: True
+    add_static_ends: True
+    correction: replicate
+    filter_nan: median
+    collate_type: full_padded
+    token_encode_type: one_hot
+    feat_model: null
+    
+eval_dataloader_cfg:
+    batch_size: 32
+    shuffle: True
