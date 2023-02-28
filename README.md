@@ -90,7 +90,7 @@ See jupter notebooks for detailed analysis and demonstration
 
 ## Citation Guidelines
 
-Methodology https://www.biorxiv.org/content/10.1101/2022.10.07.502662v1
+End-to-End ML-driven scFv design https://www.biorxiv.org/content/10.1101/2022.10.07.502662v1
 ```
 @article{li2022machine,
   title={Machine Learning Optimization of Candidate Antibodies Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries},
@@ -102,50 +102,13 @@ Methodology https://www.biorxiv.org/content/10.1101/2022.10.07.502662v1
 }
 ```
 
-Pfam (Pretraining) https://github.com/songlab-cal/tape#lmdb-data
+Antibody representation learning 
 ```
-@article{pfam,
-author = {El-Gebali, Sara and Mistry, Jaina and Bateman, Alex and Eddy, Sean R and Luciani, Aur{\'{e}}lien and Potter, Simon C and Qureshi, Matloob and Richardson, Lorna J and Salazar, Gustavo A and Smart, Alfredo and Sonnhammer, Erik L L and Hirsh, Layla and Paladin, Lisanna and Piovesan, Damiano and Tosatto, Silvio C E and Finn, Robert D},
-doi = {10.1093/nar/gky995},
-file = {::},
-issn = {0305-1048},
-journal = {Nucleic Acids Research},
-keywords = {community,protein domains,tandem repeat sequences},
-number = {D1},
-pages = {D427--D432},
-publisher = {Narnia},
-title = {{The Pfam protein families database in 2019}},
-url = {https://academic.oup.com/nar/article/47/D1/D427/5144153},
-volume = {47},
-year = {2019}
-}
-```
-
-OSA (Pretraining): http://opig.stats.ox.ac.uk/webapps/oas/oas_paired, http://opig.stats.ox.ac.uk/webapps/oas/oas
-```
-article{kovaltsuk2018observed,
-  title={Observed antibody space: a resource for data mining next-generation sequencing of antibody repertoires},
-  author={Kovaltsuk, Aleksandr and Leem, Jinwoo and Kelm, Sebastian and Snowden, James and Deane, Charlotte M and Krawczyk, Konrad},
-  journal={The Journal of Immunology},
-  volume={201},
-  number={8},
-  pages={2502--2509},
-  year={2018},
-  publisher={Am Assoc Immnol}
-```
-
-LL-Sars-Cov2 Antibody data https://github.com/mit-ll/AlphaSeq_Antibody_Dataset
-```
-@dataset{matthew_walsh_2021_5095284,
-  author       = {Matthew Walsh and Leslie Shing and Joshua Dettman and Darrell Ricke and David Younger and Randolph Lopez and
-                  Emily Engelhart and Ryan Emerson and Charles Lin and Mary Kelley and Daniel Guion},
-  title        = {{mit-ll/AlphaSeq\_Antibody\_Dataset: Initial release of AlphaSeq Antibody Dataset}},
-  month        = jul,
-  year         = 2021,
-  publisher    = {Zenodo},
-  version      = {v1.0.0},
-  doi          = {10.5281/zenodo.5095284},
-  url          = {https://doi.org/10.5281/zenodo.5095284}
+@article{li2022antibody,
+  title={Antibody Representation Learning for Drug Discovery},
+  author={Li, Lin and Gupta, Esther and Spaeth, John and Shing, Leslie and Bepler, Tristan and Caceres, Rajmonda Sulo},
+  journal={arXiv preprint arXiv:2210.02881},
+  year={2022}
 }
 ```
 
