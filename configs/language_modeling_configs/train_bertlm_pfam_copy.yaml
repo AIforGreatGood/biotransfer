@@ -2,40 +2,39 @@ defaults:
     - logger_cfgs: Tensorboard
     #- hydra/launcher: submitit_slurm
 
-experiment_name: "train_language_modeling_on_antibody"
+experiment_name: "train_language_modeling_on_pfam"
 nodes: 1
 #reload_checkpoint_path: "path to model here"
 
 hydra:
     run:
-        dir: ./results/train/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+        dir: ./results/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
 model_cfg: 
     _target_: src.models.BertForMaskedLanguageModeling
     model_type: transformer
     task: masked_language_modeling
-    model_config_file: <Full Path>/biotransfer/pretrained_models/bert_configs/config.json # full path to the bert config file
+    model_config_file: /home/gridsan/LI25662/ML4Bio/biotransfer/pretrained_models/bert_configs/config.json # full path to the bert config file
     lr: 1e-5
 
 trainer_cfg:
     max_epochs: 10
-    gpus: 8
+    gpus: 2
     num_nodes: ${nodes}
     distributed_backend: ddp
-    accumulate_grad_batches: 16 # set up enable an effective batch_size=1024 for a single 2-GPU node system
+    accumulate_grad_batches: 16 # set up to enable an effective batch_size=1024 for a single 2-GPU node system
     #precision: 16 #Precision and amp_level are used to speed up the training with a small cost to model performance; install apex to enable mix-precision computing
     #amp_level: 'O2'
    
 
 train_set_cfg:
-    _target_: src.datasets.AntibodyLanguageModelingDataset
-    data_path: <Full Path>/oas_heavy_train.lmdb
-    tokenizer: 'iupac'
+    _target_: src.datasets.PfamLanguageModelingDataset
+    data_path: /home/gridsan/LI25662/ML4Bio/biotransfer/data/pfam/pfam_train.lmdb
     in_memory: False
     maxlen: 512
     
 train_dataloader_cfg:
-    batch_size: 8
+    batch_size: 2
     num_workers: 8
     shuffle: True
 
@@ -49,12 +48,12 @@ checkpoint_callback_cfg:
     dirpath: "checkpoint/"
     
 val_set_cfg:
-    _target_: src.datasets.AntibodyLanguageModelingDataset
-    data_path: <Full Path>/oas_heavy_valid.lmdb
-    tokenizer: 'iupac'
+    _target_: src.datasets.PfamLanguageModelingDataset
+    data_path: /home/gridsan/LI25662/ML4Bio/biotransfer/data/pfam/pfam_valid.lmdb
+    tokenizer: "iupac"
     in_memory: False
     maxlen: 512
     
 val_dataloader_cfg:
-    batch_size: 8
+    batch_size: 2
     num_workers: 8

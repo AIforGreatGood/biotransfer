@@ -1,0 +1,8 @@
+# @package _group_
+_target_: src.explorers.GibbsSamplingExplorer
+rounds: 300 # number of rounds (the total number of sampled sequences = rounds*sequences_batch_size)
+sequences_batch_size: 100 # number of sequences to save from each round; after each round, the best sequence is printed
+model_queries_per_batch: 100 # this parameter is not used. 
+alphabet: ILVAGMFYWEDQNHCRKSTP
+gamma: 1 # weighting factor for the sample distribution
+log_file: ./gibbs.csv

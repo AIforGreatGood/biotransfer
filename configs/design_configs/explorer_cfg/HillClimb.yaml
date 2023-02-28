@@ -1,0 +1,9 @@
+# @package _group_
+_target_: src.explorers.HillClimbExplorer
+rounds: 100 # max number of hill climb step (max_iteration)
+sequences_batch_size: 100 # max number of top sequences to save from each round/step (only sequences that are better than the previous sequence are saved)
+model_queries_per_batch: 1000 # number of sequences to query the model each round/step
+alphabet: ILVAGMFYWEDQNHCRKSTP
+random_restart: True # randomly mutate the seed sequence as the starting sequence
+expected_num_mutantations_random_restart: 2
+log_file: ./hillclimb.csv

@@ -1,0 +1,27 @@
+defaults:
+    - explorer_cfg: HillClimb
+
+experiment_name: GP_HC
+maximize: True # direction of the optimization
+
+hydra:
+    run:
+        dir: ./results/14H/${experiment_name}/
+
+model_cfg:
+    _target_: src.test_regression.GPModelPrediction
+    feat_cfg:
+        model_config_file: "/home/gridsan/LI25662/ML4Bio/biotransfer/pretrained_models/bert_configs/config.json"
+        feat_path: "/home/gridsan/LI25662/ML4Bio/biotransfer/pretrained_models/HC.ckpt"
+        strict_reload: False
+    pca_model_path: "/home/gridsan/LI25662/ML4Bio/biotransfer/pretrained_models/gp_14H/pca_model.sav"
+    gp_state_dict_path: "/home/gridsan/LI25662/ML4Bio/biotransfer/pretrained_models/gp_14H/GP_model_state_dict.pth"
+    batch_size: 64
+
+seed_topK: 0
+cdr_region: Null # all variable regions or [0] for cdr1, [1] for cdr 2 and [2] for cdr3
+
+dataloader_cfg:
+    _target_: src.datasets.CovidDesignDataset.CovidDataset
+    chain: "14H"
+    data_path: "/home/gridsan/LI25662/ML4Bio/biotransfer/data/covid/" # used to extract top k sequences to be used as seeds and initialize the GP model

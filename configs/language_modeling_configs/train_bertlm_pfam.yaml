@@ -14,28 +14,27 @@ model_cfg:
     _target_: src.models.BertForMaskedLanguageModeling
     model_type: transformer
     task: masked_language_modeling
-    model_config_file: /home/li25662/AIforGreatGood/biotransfer/pretrained_models/bert_configs/config.json # full path to the bert config file
+    model_config_file: <Full Path>/biotransfer/pretrained_models/bert_configs/config.json # full path to the bert config file
     lr: 1e-5
-    warmup_steps: 10000
 
 trainer_cfg:
     max_epochs: 10
-    gpus: 2
+    gpus: 8
     num_nodes: ${nodes}
     distributed_backend: ddp
-    accumulate_grad_batches: 256 # set up enable an effective batch_size=1024 for a single 2-GPU node system
+    accumulate_grad_batches: 16 # set up to enable an effective batch_size=1024 for a single 2-GPU node system
     #precision: 16 #Precision and amp_level are used to speed up the training with a small cost to model performance; install apex to enable mix-precision computing
     #amp_level: 'O2'
    
 
 train_set_cfg:
     _target_: src.datasets.PfamLanguageModelingDataset
-    data_path: /home/li25662/AIforGreatGood/biotransfer/data/pfam/pfam_train.lmdb
+    data_path: <Full Path>/biotransfer/data/pfam/pfam_train.lmdb
     in_memory: False
     maxlen: 512
     
 train_dataloader_cfg:
-    batch_size: 2
+    batch_size: 8
     num_workers: 8
     shuffle: True
 
@@ -46,15 +45,15 @@ callback_cfgs:
         verbose: True
         
 checkpoint_callback_cfg:
-    filepath: "checkpoint/"
+    dirpath: "checkpoint/"
     
 val_set_cfg:
     _target_: src.datasets.PfamLanguageModelingDataset
-    data_path: /home/li25662/AIforGreatGood/biotransfer/data/pfam/pfam_valid.lmdb
+    data_path: <Full Path>/biotransfer/data/pfam/pfam_valid.lmdb
     tokenizer: "iupac"
     in_memory: False
     maxlen: 512
     
 val_dataloader_cfg:
-    batch_size: 2
+    batch_size: 8
     num_workers: 8

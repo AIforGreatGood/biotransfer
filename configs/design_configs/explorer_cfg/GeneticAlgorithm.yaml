@@ -1,0 +1,11 @@
+# @package _group_
+_target_: src.explorers.GeneticAlgorithmExplorer
+rounds: 15 # number of generations
+sequences_batch_size: 100 # number of top sequences to save from each round/step
+model_queries_per_batch: 1000 # number of sequences to query the model each round/step
+alphabet: ILVAGMFYWEDQNHCRKSTP
+population_size: 20
+parent_selection_strategy: wright-fisher
+beta: 0.2
+children_proportion: .2
+log_file: ./genetic.csv

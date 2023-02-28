@@ -14,17 +14,16 @@ model_cfg:
     inducing_points: null
 
 feat_cfg:
-    _target_: src.models.feat_extraction.BertFeatExtractor
-    model_config_file: /home/li25662/AIforGreatGood/biotransfer/pretrained_models/bert_configs/config_hiddenstate.json
-    feat_path: /home/li25662/AIforGreatGood/biotransfer/pretrained_models/pfam.ckpt # Full path to the pretrained langauge model checkpoint
+    _target_: src.models.feat_extraction.FeatExtractor
+    model_config_file: <Full Path>/biotransfer/pretrained_models/bert_configs/config.json
+    feat_path: <Full Path>/biotransfer/pretrained_models/pfam.ckpt # Full path to the pretrained langauge model checkpoint
     strict_reload: False
     variable_regions: True
-    feat_concat: True
     pca_dim: 1024
 
 train_set_cfg:
     _target_: src.datasets.CovidDataset
-    data_path: /home/li25662/AIforGreatGood/biotransfer/data/covid/
+    data_path: <Full Path>/biotransfer/data/covid/
     split: train
     chain: 14H
     average_replicates: True
@@ -38,7 +37,7 @@ train_dataloader_cfg:
     
 val_set_cfg:
     _target_: src.datasets.CovidDataset
-    data_path: /home/li25662/AIforGreatGood/biotransfer/data/covid/
+    data_path: <Full Path>/biotransfer/data/covid/
     split: valid
     chain: 14H
     average_replicates: True
