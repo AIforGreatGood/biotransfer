@@ -1,6 +1,6 @@
 Academic and/or non-profit Internal Research End User Agreement
 
-Massachusetts Institute to Technology (hereafter MIT) is the owner of certain rights, title and interest in software disclosed under MIT Case No. 23686L, "Biotransfer" by Lin Li and others (as further defined herein, the ÒSoftwareÓ), and has the right to grant licenses thereunder.
+Massachusetts Institute to Technology (hereafter MIT) is the owner of certain rights, title and interest in software disclosed under MIT Case No. 23686L, "Biotransfer" by Lin Li and others (as further defined herein, the "Software"), and has the right to grant licenses thereunder.
 
 This Academic and/or non-profit Internal Research End User Agreement (the "Agreement"), sets forth the terms of use governing your (the "End User") use of the Software. The Software is being released on Github for free by MIT to the End User solely for academic and/or non-profit internal research purposes (the "Purpose"). 
 
