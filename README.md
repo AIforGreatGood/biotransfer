@@ -90,7 +90,7 @@ See jupter notebooks for detailed analysis and demonstration
 
 ## Citation Guidelines
 
-[End-to-End ML-driven scFv design]https://www.biorxiv.org/content/10.1101/2022.10.07.502662v1
+[End-to-End ML-driven scFv design](https://www.biorxiv.org/content/10.1101/2022.10.07.502662v1)
 ```
 @article{li2022machine,
   title={Machine Learning Optimization of Candidate Antibodies Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries},
