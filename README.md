@@ -17,7 +17,7 @@ The software includes four major components:
 - ScFv optimization and design
 - Results analysis
 
-<img src="https://llcad-github.llan.ll.mit.edu/AIDED/biotransfer/blob/master/images/antibody_edited.png" width="600" height="430"> 
+<img src="https://github.com/AIforGreatGood/biotransfer/blob/test/images/antibody_edited.png" width="600" height="430"> 
 
 ## System Requirement
 ### Hardware requirements
