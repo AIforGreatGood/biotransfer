@@ -149,19 +149,6 @@ LL-Sars-Cov2 Antibody data https://github.com/mit-ll/AlphaSeq_Antibody_Dataset
 }
 ```
 
-IgG Antibody data https://github.com/gifford-lab/antibody-2019/tree/master/data/training%20data
-```
-article{liu2020antibody,
-  title={Antibody complementarity determining region design using high-capacity machine learning},
-  author={Liu, Ge and Zeng, Haoyang and Mueller, Jonas and Carter, Brandon and Wang, Ziheng and Schilz, Jonas and Horny, Geraldine and Birnbaum, Michael E and Ewert, Stefan and Gifford, David K},
-  journal={Bioinformatics},
-  volume={36},
-  number={7},
-  pages={2126--2133},
-  year={2020},
-  publisher={Oxford University Press}
-```
-
 ## Disclaimer
 
 DISTRIBUTION STATEMENT A. Approved for public release. Distribution is unlimited.
