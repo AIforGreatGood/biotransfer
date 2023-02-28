@@ -2,45 +2,37 @@
 # Subject to FAR 52.227-11 – Patent Rights – Ownership by the Contractor (May 2014).
 
 from tape import utils
-from tape.registry import registry
 
 from pytorch_lightning import LightningModule
 import torch
 
-class BertForMaskedLanguageModeling(LightningModule):
-    """Bert model for masked language modeling"""
+from tape.models.modeling_utils import ProteinConfig
+from .modeling_bert import ProteinBertForMaskedLM
 
-    def __init__(self, model_type, task, model_config_file, lr, from_pretrained=None, warmup_steps=0):
-        """Inits model
+class BertPairedMaskedLM(LightningModule):
+    def __init__(self, model_config_file, lr, from_pretrained=None, warmup_steps=0,
+        reload_weight_path=None, reload_config_path=None):
 
-        Args:
-            model_type: The model_type according to tape
-            task: The task according to tape
-            model_config_file: Path to config file
-            lr: learning rate
-            from_pretrained: Path to pretrained model if necessary
-            warmup_steps: linear warmup scheduling for learning rate
-        """
         super().__init__()
-
         self.save_hyperparameters()
-
-        self.model = registry.get_task_model(model_type, task, model_config_file, from_pretrained)
+        config = ProteinConfig().from_pretrained(model_config_file)
+        self.model = ProteinBertForMaskedLM(config) 
+        ### TODO: test the model loading function
+        if from_pretrained is not None:
+            self.model = self.model.from_pretrained(from_pretrained)
         self.lr = lr
         self.warmup_steps = warmup_steps
+        self.reload_weight_path = reload_weight_path
+        self.reload_config_path = reload_config_path
 
     def training_step(self, batch, batch_idx):
-        """Training step for model
-
-        Args:
-            batch: A batch of samples to train on
-            batch_idx: The index of the current batch
-        """
         x = batch["input_ids"]
         mask = batch["input_mask"]
         y = batch["targets"]
+        position_ids = batch["position_ids"]
+        token_type_ids = batch["token_type_ids"]
 
-        outputs = self.model(x,mask,y)
+        outputs = self.model(x,input_mask=mask,targets=y,position_ids=position_ids,token_type_ids=token_type_ids)
         if isinstance(outputs[0],tuple):
             loss, metrics = outputs[0]
         else:
@@ -50,15 +42,12 @@ class BertForMaskedLanguageModeling(LightningModule):
         self.logger.experiment.add_scalar("Train/step/loss", loss, self.trainer.global_step)
         self.logger.experiment.add_scalar("Train/step/perplexity", metrics["perplexity"], self.trainer.global_step)
         
-        # To add metrics to the progress bar, use {'progress_bar': <metric>} as a returned value. See:
-        # https://github.com/PyTorchLightning/pytorch-lightning/issues/2608
+        #To add metrics to the progress bar, use {'progress_bar': <metric>} as a returned value. See:
+        #https://github.com/PyTorchLightning/pytorch-lightning/issues/2608
 
         return {'loss': loss, 'progress_bar': {'Perplexity': metrics["perplexity"]}, 'metrics': metrics, "perplexity": metrics["perplexity"]}
 
     def training_epoch_end(self, outputs):
-        """Called at the end of training epoch.
-           See pytorch-lightning for functionality
-        """
         avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
         avg_perplexity = torch.stack([x['perplexity'] for x in outputs]).mean()
         metrics = {"loss": avg_loss, "perplexity": avg_perplexity}
@@ -69,18 +58,13 @@ class BertForMaskedLanguageModeling(LightningModule):
         return metrics
 
     def validation_step(self, batch, batch_idx):
-        """Validation step for model
-
-        Args:
-            batch: A batch of samples to train on
-            batch_idx: The index of the current batch
-        """
         x = batch["input_ids"]
-        print('Valid batch keys:', batch.keys())
         mask = batch["input_mask"]
         y = batch["targets"]
+        position_ids = batch["position_ids"]
+        token_type_ids = batch["token_type_ids"]
 
-        outputs = self.model(x,mask,y)
+        outputs = self.model(x,input_mask=mask,targets=y,position_ids=position_ids,token_type_ids=token_type_ids)
         if isinstance(outputs[0],tuple):
             loss, metrics = outputs[0]
         else:
@@ -90,9 +74,6 @@ class BertForMaskedLanguageModeling(LightningModule):
         return {'val_loss': loss, 'metrics': metrics, "val_perplexity": metrics["perplexity"]}
 
     def validation_epoch_end(self, outputs):
-        """Called at the end of validation epoch.
-           See pytorch-lightning for functionality
-        """
         avg_loss = torch.stack([x['val_loss'] for x in outputs]).mean()
         self.val_loss = avg_loss.item()
         print("Val loss: {}".format(self.val_loss))
@@ -105,45 +86,28 @@ class BertForMaskedLanguageModeling(LightningModule):
 
         return metrics
 
-    def sync_across_gpus(self, t):   # t is a tensor
-        """Aggregate results from across gpus. 
-
-        Args:
-            t: A tensor.
-
-        Returns:
-            All collected instances of tensor across gpus?
-        """
+    def sync_across_gpus(self, t):   # t is a tensor       
         # a work-around function to sync outputs across multiple gpus to compute a metric
         gather_t_tensor = [torch.ones_like(t) for _ in range(self.trainer.world_size)]
         torch.distributed.all_gather(gather_t_tensor, t)
         return torch.cat(gather_t_tensor)
 
-
     def test_step(self, batch, batch_idx):
-        """Test step for model
-
-        Args:
-            batch: A batch of samples to train on
-            batch_idx: The index of the current batch
-        """
         x = batch["input_ids"]
         mask = batch["input_mask"]
         y = batch["targets"]
+        position_ids = batch["position_ids"]
+        token_type_ids = batch["token_type_ids"]
 
-        outputs = self.model(x,mask,y)
+        outputs = self.model(x,input_mask=mask,targets=y,position_ids=position_ids,token_type_ids=token_type_ids)
         if isinstance(outputs[0],tuple):
             loss, metrics = outputs[0]
         else:
             loss = outputs[0]
             metrics = {}
-
         return {'test_loss': loss, 'metrics': metrics, "test_perplexity": metrics["perplexity"]}
 
     def test_epoch_end(self, outputs):
-        """Called at the end of test epoch.
-           See pytorch-lightning for functionality
-        """
         avg_loss = torch.stack([x['test_loss'] for x in outputs]).mean()
         self.test_loss = avg_loss.item()
         perplexities = torch.stack([x['test_perplexity'] for x in outputs])
@@ -154,19 +118,17 @@ class BertForMaskedLanguageModeling(LightningModule):
         if self.trainer.use_ddp:
             avg_perplexity_all = self.sync_across_gpus(perplexities).mean()
         print('average perplexity (all)', avg_perplexity_all)
-    
+
         return metrics
 
     def configure_optimizers(self):
-        """Setup optimizer"""
         optimizer = utils.setup_optimizer(self.model, self.lr)
         return optimizer
 
-    # learning rate warm-up (deprecated with the updated pytorch lightning)
-    """
-    #def optimizer_step(self,current_epoch, batch_nb, optimizer, optimizer_idx, second_order_closure=None, on_tpu=False, using_native_amp=False, using_lbfgs=False):
-        #Customized optimizer step to allow warmup scheduling.
-        #See pytorch-lightning for details
+    # learning rate warm-up
+    def optimizer_step(self, current_epoch, batch_nb, optimizer, optimizer_idx, second_order_closure=None, on_tpu=False,
+        using_native_amp=False, using_lbfgs=False):
+
         # warm up lr
         lr_scale = 1
         if self.trainer.global_step < self.warmup_steps:
@@ -180,4 +142,3 @@ class BertForMaskedLanguageModeling(LightningModule):
         # update params
         optimizer.step()
         optimizer.zero_grad()
-    """

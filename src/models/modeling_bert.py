@@ -1,6 +1,5 @@
 # Copyright (c) 2021 Massachusetts Institute of Technology
 # Subject to FAR 52.227-11 – Patent Rights – Ownership by the Contractor (May 2014).
-# SPDX-License-Identifier: MIT
 
 # This file is a modification of https://github.com/songlab-cal/tape, release version 0.4. 
 # MIT Lincoln Laboratory has made these modifications to add support to expose hidden

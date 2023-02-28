@@ -1,6 +1,5 @@
 # Copyright (c) 2021 Massachusetts Institute of Technology
 # Subject to FAR 52.227-11 – Patent Rights – Ownership by the Contractor (May 2014).
-# SPDX-License-Identifier: MIT
 
 """Training classes and functions"""
 
@@ -14,7 +13,7 @@ from scipy.stats import pearsonr
 from sklearn.decomposition import PCA, IncrementalPCA, KernelPCA
 import joblib
 
-def validation(model, val_dataloader, feat_model, mll, variable_regions=None, feat_concat=False, pca_model=None):
+def validation(model, val_dataloader, feat_model, mll, variable_regions=None, pca_model=None):
     """Evaluate model on validation set
 
     Args:
@@ -38,7 +37,7 @@ def validation(model, val_dataloader, feat_model, mll, variable_regions=None, fe
                 data, mask, target = batch["input_ids"].cuda(), batch["input_masks"].cuda(), batch["targets"].cuda()
             else:
                 data, mask, target = batch["input_ids"], batch["input_masks"], batch["targets"]
-            val_X = feat_model(data, mask, variable_regions=variable_regions, feat_concat=feat_concat)
+            val_X = feat_model(data, mask, variable_regions=variable_regions)
             if pca_model is not None:
                 if torch.cuda.is_available():
                     val_X = val_X.cpu()
@@ -116,12 +115,6 @@ def train_gp(train_set_cfg, train_dataloader_cfg, feat_cfg, model_cfg=None, val_
     else:
         variable_regions = train_set.get_variable_regions()
         print('Variable regions:', variable_regions)
-    # feature concatenation
-    feat_concat = feat_cfg.feat_concat
-    if feat_concat: 
-        assert pca_dim is not None, 'Please specify an integer value for pca_dim, or set feat_concat to False.'
-    if variable_regions is None:
-        assert not feat_concat, 'If no variable regions is specified, then features cannot be concatenated. Either set variable_regions=True or set feat_concat=False'
 
     # prepare train data
     feat_model.eval()
@@ -138,7 +131,7 @@ def train_gp(train_set_cfg, train_dataloader_cfg, feat_cfg, model_cfg=None, val_
             else:
                 data, mask, target = batch["input_ids"], batch["input_masks"], batch["targets"]
             train_y = torch.cat((train_y, target.squeeze(-1)), 0)
-            output = feat_model(data, mask, variable_regions=variable_regions, feat_concat=feat_concat)
+            output = feat_model(data, mask, variable_regions=variable_regions)
             train_X = torch.cat((train_X, output), 0)
     print(train_X.size())
     print(train_y.size())
@@ -174,13 +167,6 @@ def train_gp(train_set_cfg, train_dataloader_cfg, feat_cfg, model_cfg=None, val_
     gp_model.train()
     likelihood.train()
     optimizer = torch.optim.Adam(gp_model.parameters(), lr=model_cfg.lr)
-    """
-    optimizer = torch.optim.Adam(model.parameters()[
-        {'params': gp_model.covar_module.parameters()},
-        {'params': gp_model.mean_module.parameters()},
-        {'params': gp_model.likelihood.parameters()},
-        ], lr=0.01)
-    """
     mll = gpytorch.mlls.ExactMarginalLogLikelihood(likelihood, gp_model)
     epoch_iter = tqdm.tqdm(range(model_cfg.num_epochs))
     for i in epoch_iter:
@@ -199,7 +185,7 @@ def train_gp(train_set_cfg, train_dataloader_cfg, feat_cfg, model_cfg=None, val_
     if val_set_cfg is not None:
         gp_model.eval()
         likelihood.eval()
-        val_loss = validation(gp_model, val_dataloader, feat_model, mll, variable_regions=variable_regions, feat_concat=feat_concat, pca_model=pca_model)
+        val_loss = validation(gp_model, val_dataloader, feat_model, mll, variable_regions=variable_regions, pca_model=pca_model)
         print('validation loss:', val_loss)
     
     # save model

@@ -1,6 +1,5 @@
 # Copyright (c) 2021 Massachusetts Institute of Technology
 # Subject to FAR 52.227-11 – Patent Rights – Ownership by the Contractor (May 2014).
-# SPDX-License-Identifier: MIT
 
 from tape import utils
 from pytorch_lightning import LightningModule
@@ -14,7 +13,7 @@ from scipy.stats import pearsonr, spearmanr
 class BertForValuePrediction(LightningModule):
     """Bert model with a value regression head"""
 
-    def __init__(self, model_config_file, lr, downstream_hid_dim, downstream_dropout, loss_function='mse', from_pretrained=None, warmup_steps=0):
+    def __init__(self, model_config_file, lr, downstream_hid_dim, downstream_dropout, loss_function='mse', from_pretrained=None):
         """Inits model
 
         Args:
@@ -32,7 +31,6 @@ class BertForValuePrediction(LightningModule):
         if from_pretrained is not None:
             self.model = self.model.from_pretrained(from_pretrained)
         self.lr = lr
-        self.warmup_steps = warmup_steps
         self.logits = []
         self.targets = []
 
@@ -201,11 +199,13 @@ class BertForValuePrediction(LightningModule):
         return optimizer
 
     # learning rate warm-up
+    """
     def optimizer_step(self, current_epoch, batch_nb, optimizer, optimizer_idx, second_order_closure=None, on_tpu=False,
         using_native_amp=False, using_lbfgs=False):
-        """Customized optimizer step to allow warmup scheduling.
-           See pytorch-lightning for details
-        """
+        
+        #Customized optimizer step to allow warmup scheduling.
+        #See pytorch-lightning for details
+        
         # warm up lr
         lr_scale = 1
         if self.trainer.global_step < self.warmup_steps:
@@ -219,3 +219,4 @@ class BertForValuePrediction(LightningModule):
         # update params
         optimizer.step()
         optimizer.zero_grad()
+    """

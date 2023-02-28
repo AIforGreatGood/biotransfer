@@ -1,6 +1,5 @@
 # Copyright (c) 2021 Massachusetts Institute of Technology
 # Subject to FAR 52.227-11 – Patent Rights – Ownership by the Contractor (May 2014).
-# SPDX-License-Identifier: MIT
 
 from copy import copy, deepcopy
 import math
@@ -266,23 +265,13 @@ class CovidDataset(Dataset):
                 'input_masks': input_masks,
                 'targets': stability_true_value}
 
-    def get_variable_regions_(self):
+    def get_variable_regions(self):
         """Returns list of indices representing the variable regions of the
            dataset chain type.
         """
         var =  self.__class__.backbone_variable_regions[self.chain]
         variable_regions = list(itertools.chain(*[list(range(i,j)) for i,j in var]))
         variable_regions = [i+1 for i in variable_regions] # plus 1 to offset the beginning token
-        return variable_regions
-
-    def get_variable_regions(self, offset_val=1):
-        """Returns list of indices representing the variable regions of the
-           dataset chain type.
-           param: 
-                offset_val: default to 1 to offset the starting token used in the Bert model
-        """
-        var =  self.__class__.backbone_variable_regions[self.chain]
-        variable_regions = [list(range(i+offset_val,j+offset_val)) for i,j in var]
         return variable_regions
 
 
