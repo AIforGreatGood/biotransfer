@@ -1,4 +1,5 @@
-name: biotransfer
+
+name: antibody_design
 channels:
   - pytorch
   - conda-forge
@@ -6,20 +7,19 @@ channels:
 dependencies:
   # Required Dependencies
   - python=3.8.*
-  - pip=21.1.1
-  - cudatoolkit=10.1.243
+  - pytorch=1.8.0
+  - pytorch-lightning=1.0.* # Minor changes might be needed for a later version of the pytorch ligthning library. 
+  - pyyaml=5.3.1
   - torchvision
-  - pytorch
+  - scikit-learn=0.24.1
+  - pandas
+  - tqdm
+  - pip
   - pip:
-    - tape-proteins==0.4
-    - gpytorch==1.2.0
-    - pytorch-lightning==1.0.0
-    - hydra-core==1.1.0.dev7
-    - hydra-submitit-launcher==1.1.5
-    - hydra-optuna-sweeper==0.9.0rc2
-    - optuna==2.5.0
-    - tqdm
-    - scikit-learn
-    - pandas
-    - psycopg2-binary
-
+    - tape-proteins==0.5
+    - gpytorch==1.4.1
+    - hydra-core>=1.0
+    - hydra-submitit-launcher>=1.0
+    - seaborn
+    - onnx
+    - onnxruntime
