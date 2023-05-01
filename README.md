@@ -72,6 +72,8 @@ See the Demo section for detailed instruction on generating artge-specific heavy
 
 The training of language models leverages large-scale protein and antibody sequence databases (such as Pfam for proteins and OSA for antibodies) to capture structural, evolutionary and functional properties across protein and antibody spaces. These models, onces trained, do not need to be re-trained and can be directly used to train models for predicting the downstream functional property (such as scFv binding prediction) via transfer learning. 
 
+The pretrained language models are available upon request.
+
 ### 2. Training and Evaluating a Regression Model (e.g., binding prediction) 
 #### Using Pretrained Language Model Finetuning
 - "python train_from_config.py -cd configs/lm_finetune_configs/ -cn \<config file here\>".
