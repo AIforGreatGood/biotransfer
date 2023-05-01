@@ -45,7 +45,7 @@ Python Dependencies: All dependencies are listed in the environment.yaml file
 Training time: Around 15 mins.
 
 Expected output: 
-- Once the model finishes training, it'll display the performance of the model on the validation data. Expect the output with MAE to be around 0.45 and Pearson correlation to be around 0.6.
+- Once the model finishes training, it'll display the performance of the model on the validation data. 
 - The program will automatically save 3 files in the results folder to be used for antibody generation: GP_model_state_dict.pth, pca_model.sav adn train_GP_from_config.log
 
 ### Demo 2: To generate scFvs using the trained binding (requires GPU)
