@@ -2,7 +2,7 @@
 
 Please refer to our paper [Machine Learning Optimization of Candidate Antibodies Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries](https://www.biorxiv.org/content/10.1101/2022.10.07.502662v1) for additional information on the method and design of scFv sequences.  
 
-The initial AlphaSeq Antibody Dataset 1 can be found [here](https://github.com/mit-ll/AlphaSeq_Antibody_Dataset).
+The intial training data (Dataset 1) and designed antibody dataset (Dataset 2) can be found [here](https://github.com/mit-ll/AlphaSeq_Antibody_Dataset). 
 Additional information about the design of Dataset 1 and experimental set-up for quantitative binding
 measurements can be found in our [Data Descriptor
 Paper](https://www.nature.com/articles/s41597-022-01779-4). 
