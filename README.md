@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/405113223.svg)](https://zenodo.org/badge/latestdoi/405113223)
+
+
 # biotransfer: A repository for designing sub-nanomolar antibodies using machine learning-driven approach
 
 Please refer to our paper [Machine Learning Optimization of Candidate Antibodies Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries](https://www.biorxiv.org/content/10.1101/2022.10.07.502662v1) for additional information on the method and design of scFv sequences.  
