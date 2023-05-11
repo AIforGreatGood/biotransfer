@@ -1,4 +1,4 @@
-cff-version: 1.0.1-beta
+cff-version: 1.0.0-beta
 message: "If you use this software, please cite it as below."
 authors:
 - family-names: "Lin"
@@ -11,7 +11,7 @@ authors:
 - family-names: "Shing"
   given-names: "Leslie"
 title: "Machine Learning Optimization of Candidate Antibody Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries"
-version: 1.0.1-beta
+version: 1.0.0-beta
 doi: 10.5281/zenodo.7886661
 date-released: 2023-05-12
 url: "https://github.com/AIforGreatGood/biotransfer"
