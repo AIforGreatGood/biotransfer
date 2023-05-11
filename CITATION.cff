@@ -4,6 +4,12 @@ authors:
 - family-names: "Lin"
   given-names: "Li"
   orcid: "https://orcid.org/0000-0003-4087-6149"
+- family-names: "Spaeth"
+  given-names: "John"
+- family-names: "Gupta"
+  given-names: "Esther"
+- family-names: "Shing"
+  given-names: "Leslie"
 title: "Machine Learning Optimization of Candidate Antibody Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries"
 version: 1.0.1-beta
 doi: 10.5281/zenodo.7886661
