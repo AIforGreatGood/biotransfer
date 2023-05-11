@@ -1,0 +1,18 @@
+cff-version: v1.0.1-beta
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Li"
+  given-names: "Lin"
+  orcid: "https://orcid.org/0000-0003-4087-6149"
+- family-names: "John"
+  given-names: "Spaeth"
+- family-names: "Gupta"
+  given-names: "Esther"
+- family-names: "Shing"
+  given-names: "Leslie"
+title: "Machine Learning Optimization of Candidate Antibody Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries"
+version: v1.0.1-beta
+repository name: "AIforGreatGood/biotransfer"
+doi: 10.5281/zenodo.7886661
+date-released: 2023-05-02
+url: "https://github.com/AIforGreatGood/biotransfer"
