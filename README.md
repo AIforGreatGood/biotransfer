@@ -97,13 +97,15 @@ See jupter notebooks for detailed analysis and demonstration
 
 [Machine Learning Optimization of Candidate Antibodies Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries](https://www.biorxiv.org/content/10.1101/2022.10.07.502662v1)
 ```
-@article{li2022machine,
-  title={Machine Learning Optimization of Candidate Antibodies Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries},
-  author={Li, Lin and Gupta, Esther and Spaeth, John and Shing, Leslie and Jaimes, Rafael and Caceres, Rajmonda Sulo and Bepler, Tristan and Walsh, Matthew E},
-  journal={bioRxiv},
-  pages={2022--10},
-  year={2022},
-  publisher={Cold Spring Harbor Laboratory}
+@article{li2023machine,
+  title={Machine learning optimization of candidate antibody yields highly diverse sub-nanomolar affinity antibody libraries},
+  author={Li, Lin and Gupta, Esther and Spaeth, John and Shing, Leslie and Jaimes, Rafael and Engelhart, Emily and Lopez, Randolph and Caceres, Rajmonda S and Bepler, Tristan and Walsh, Matthew E},
+  journal={Nature Communications},
+  volume={14},
+  number={1},
+  pages={3454},
+  year={2023},
+  publisher={Nature Publishing Group UK London}
 }
 ```
 
