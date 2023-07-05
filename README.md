@@ -3,7 +3,7 @@
 
 # biotransfer: A repository for designing sub-nanomolar antibodies using machine learning-driven approach
 
-Please refer to our paper [Machine Learning Optimization of Candidate Antibodies Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries](https://www.biorxiv.org/content/10.1101/2022.10.07.502662v1) for additional information on the method and design of scFv sequences.  
+Please refer to our paper [Machine Learning Optimization of Candidate Antibodies Yields Highly Diverse Sub-nanomolar Affinity Antibody Libraries](https://www.nature.com/articles/s41467-023-39022-2) for additional information on the method and design of scFv sequences.  
 
 The intial training data (Dataset 1) and designed antibody dataset (Dataset 2) can be found [here](https://github.com/mit-ll/AlphaSeq_Antibody_Dataset). 
 Additional information about the design of Dataset 1 and experimental set-up for quantitative binding
