@@ -9,7 +9,7 @@ The intial training data (Dataset 1) and designed antibody dataset (Dataset 2) c
 Additional information about the design of Dataset 1 and experimental set-up for quantitative binding
 measurements can be found in our [Data Descriptor
 Paper](https://www.nature.com/articles/s41597-022-01779-4). 
-The validation dataset can be found here. 
+
 
 ## Overview
 Therapeutic antibodies are an important and rapidly growing drug modality. However, the design and discovery of early-stage antibody therapeutics remain a time and cost-intensive endeavor. Machine learning has demonstrated potential in accelerating drug discovery. We implement an Bayesian, language model-based method for desiging large and diverse libraries of target-specific high-affinity scFvs. 
